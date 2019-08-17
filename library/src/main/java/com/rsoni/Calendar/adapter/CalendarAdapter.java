@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.rsoni.Calendar.Listener.onDateClickedListener;
 import com.rsoni.Calendar.R;
 import com.rsoni.Calendar.model.Event;
 import com.rsoni.Calendar.utils.ColorUtils;
@@ -25,12 +26,14 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
     private List<Event> events;
     private Context context;
     private int currentMonth;
+    private onDateClickedListener listener;
 
-    public CalendarAdapter(Context context, ArrayList<Date> dates, int currentMonth, List<Event> events) {
+    public CalendarAdapter(Context context, ArrayList<Date> dates, int currentMonth, List<Event> events, onDateClickedListener listener) {
         this.dates = dates;
         this.currentMonth = currentMonth;
         this.context = context;
         this.events = events;
+        this.listener = listener;
     }
 
     @Override
@@ -52,13 +55,16 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
 
     @Override
     public void onBindViewHolder(@NonNull CalendarAdapter.vh vh, int i) {
-        Calendar calendar = Calendar.getInstance();
+        final Calendar calendar = Calendar.getInstance();
         calendar.setTime(dates.get(i));
 
         vh.tv.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
+
+        Event temp = null;
         for (Event event : events) {
             if (event.getCalendar().getTimeInMillis() == calendar.getTimeInMillis()) {
                 ColorUtils.setDayColor(context, vh.tv, event.getColor());
+                temp = event;
                 break;
             }
         }
@@ -66,10 +72,17 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
         if (!isCurrentMonth(calendar)) vh.tv.setAlpha(0.12f);
         else vh.tv.setAlpha(1.0f);
 
+        final Event finalTemp = temp;
         vh.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (listener != null) {
+                    if (finalTemp != null) {
+                        listener.onDateClicked(finalTemp);
+                    } else {
+                        listener.onDateClicked(new Event(calendar, 0));
+                    }
+                }
             }
         });
     }
@@ -97,6 +110,11 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
 
     public void updateEvent(List<Event> events) {
         this.events = events;
+        notifyDataSetChanged();
+    }
+
+    public void setListener(onDateClickedListener listener) {
+        this.listener = listener;
         notifyDataSetChanged();
     }
 

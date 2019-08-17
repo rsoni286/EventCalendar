@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.rsoni.Calendar.Listener.onDateClickedListener;
 import com.rsoni.Calendar.adapter.CalendarAdapter;
 import com.rsoni.Calendar.model.Event;
 import com.rsoni.Calendar.utils.CalendarUtils;
@@ -22,6 +23,8 @@ import com.rsoni.Calendar.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +35,7 @@ public class EventCalendar extends LinearLayout {
     private int TEMP_MONTH;
     private ArrayList<Date> dates;
     private CalendarAdapter calendarAdapter;
-    private List<Event> events;
+    private onDateClickedListener listener = null;
 
     public EventCalendar(Context context) {
         super(context);
@@ -70,8 +73,8 @@ public class EventCalendar extends LinearLayout {
         RecyclerView calendar = view.findViewById(R.id.recycleCalendar);
         dates = loadDates(CURRENT_MONTH);
 
-        events = new ArrayList<>();
-        calendarAdapter = new CalendarAdapter(getContext(), dates, TEMP_MONTH, events);
+        List<Event> events = new ArrayList<>();
+        calendarAdapter = new CalendarAdapter(getContext(), dates, TEMP_MONTH, events, listener);
         calendar.setHasFixedSize(true);
         calendar.setLayoutManager(new GridLayoutManager(getContext(), 7));
         calendar.setAdapter(calendarAdapter);
@@ -147,6 +150,23 @@ public class EventCalendar extends LinearLayout {
     }
 
     public void setEvents(List<Event> events) {
+        Collections.sort(events, comparator);
         calendarAdapter.updateEvent(events);
+    }
+
+    Comparator<Event> comparator = new Comparator<Event>() {
+        @Override
+        public int compare(Event e1, Event e2) {
+            Long t1 = e1.getCalendar().getTimeInMillis();
+            Long t2 = e2.getCalendar().getTimeInMillis();
+
+            return t2.compareTo(t1);
+
+        }
+    };
+
+    public void setOnDateClickedListener(onDateClickedListener listener) {
+        this.listener = listener;
+        calendarAdapter.setListener(listener);
     }
 }
