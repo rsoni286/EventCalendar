@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -59,7 +60,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
         calendar.setTime(dates.get(i));
 
         vh.tv.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
-        ColorUtils.setDayColor(context, vh.tv,getResources().getColor(android.R.color.transparent));
+        ColorUtils.setDayColor(context, vh.tv, ContextCompat.getColor(context, android.R.color.white));
         Event temp = null;
         for (Event event : events) {
             if (event.getCalendar().getTimeInMillis() == calendar.getTimeInMillis()) {
