@@ -1,19 +1,25 @@
 package com.rsoni.Calendar.utils;
 
 import android.content.Context;
+import android.graphics.BlendMode;
+import android.graphics.BlendModeColorFilter;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.rsoni.Calendar.R;
 
 public class ColorUtils {
 
     public static void setDayColor(Context context, TextView tv, int color) {
-        setDayColors(tv, context.getResources().getColor(android.R.color.white), Typeface.NORMAL,
+        setDayColors(tv, ContextCompat.getColor(context, android.R.color.white), Typeface.NORMAL,
                 R.drawable.background_circle);
-
-        tv.getBackground().setColorFilter(color,
-                android.graphics.PorterDuff.Mode.MULTIPLY);
+        MyDrawableCompat.setColorFilter(tv.getBackground(), color);
 
     }
 
@@ -28,3 +34,6 @@ public class ColorUtils {
     }
 
 }
+
+
+
