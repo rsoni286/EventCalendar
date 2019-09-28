@@ -60,7 +60,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
         calendar.setTime(dates.get(i));
 
         vh.tv.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
-        ColorUtils.setDayColor(context, vh.tv, ContextCompat.getColor(context, android.R.color.white));
+        ColorUtils.setDayColor(context, vh.tv, ContextCompat.getColor(context, android.R.color.transparent));
+        vh.tv.setTextColor(ContextCompat.getColor(context, android.R.color.black));
+
         Event temp = null;
         for (Event event : events) {
             if (event.getCalendar().getTimeInMillis() == calendar.getTimeInMillis()) {
