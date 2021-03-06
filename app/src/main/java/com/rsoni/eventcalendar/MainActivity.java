@@ -5,7 +5,6 @@ import android.text.format.DateFormat;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.rsoni.Calendar.EventCalendar;
 import com.rsoni.Calendar.Listener.onDateClickedListener;
@@ -36,16 +35,17 @@ public class MainActivity extends AppCompatActivity {
         calendar1.set(Calendar.DAY_OF_MONTH, 22);
         events.add(new Event(calendar1, getResources().getColor(R.color.colorDefault)));
 
-        Calendar calendar2 = Calendar.getInstance();
-        calendar2.set(Calendar.DAY_OF_MONTH, 27);
-        events.add(new Event(calendar2, ContextCompat.getDrawable(this, R.drawable.ic_launcher_background)));
 
-        Calendar calendar3 = Calendar.getInstance();
-        calendar3.set(Calendar.DAY_OF_MONTH, 7);
-        events.add(new Event(calendar3, ContextCompat.getDrawable(this, R.drawable.ic_launcher_background), getResources().getColor(android.R.color.holo_blue_bright)));
+        for (int i = 0; i < 10; i++) {
+            Calendar calendar3 = Calendar.getInstance();
+            calendar3.add(Calendar.DAY_OF_MONTH, i + 1);
+            events.add(new Event(calendar3, getResources().getColor(R.color.colorAccent), getResources().getColor(android.R.color.holo_blue_bright)));
+        }
 
+        eventCalendar.setDayEventShape(EventCalendar.EventShape.ROUNDED_SQUARE);
         //Set events to calendar
         eventCalendar.setEvents(events);
+
 
         //onDateClickListener
         eventCalendar.setOnDateClickedListener(new onDateClickedListener() {

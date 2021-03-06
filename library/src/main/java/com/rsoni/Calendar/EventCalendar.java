@@ -27,6 +27,11 @@ import java.util.List;
 import static com.rsoni.Calendar.utils.CalendarUtils.getCalendarKey;
 
 public class EventCalendar extends LinearLayout {
+    public enum EventShape {
+        CIRCLE, SQUARE, ROUNDED_SQUARE
+    }
+
+
     private LinearLayout header;
     private TextView sTv, monthTv;
     private int CURRENT_MONTH = 0;
@@ -163,4 +168,10 @@ public class EventCalendar extends LinearLayout {
         this.listener = listener;
         calendarAdapter.setListener(listener);
     }
+
+    public void setDayEventShape(EventShape eventShape) {
+        calendarAdapter.setEventShape(eventShape);
+    }
+
+
 }

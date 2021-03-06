@@ -4,13 +4,22 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.widget.TextView;
 
+import com.rsoni.Calendar.EventCalendar;
 import com.rsoni.Calendar.R;
 
 public class GraphicUtils {
 
-    public static void setDayColor(TextView tv, int color, int textColor) {
-        setDayColors(tv, textColor, Typeface.NORMAL,
-                R.drawable.background_circle);
+    public static void setDayColor(TextView tv, int color, int textColor, EventCalendar.EventShape eventShape) {
+        int drawable;
+        if (eventShape == EventCalendar.EventShape.CIRCLE) {
+            drawable = R.drawable.background_circle;
+        } else if (eventShape == EventCalendar.EventShape.SQUARE) {
+            drawable = R.drawable.background_square;
+        } else {
+            drawable = R.drawable.background_square_rounded;
+        }
+
+        setDayColors(tv, textColor, Typeface.NORMAL, drawable);
         MyDrawableCompat.setColorFilter(tv.getBackground(), color);
 
     }
