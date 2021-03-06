@@ -24,6 +24,8 @@ public class CalendarUtils {
                 calendar.get(Calendar.YEAR));
     }
 
-
+    public static String getCalendarKey(Context context, Calendar calendar) {
+        return context.getString(R.string.key_string, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+    }
 
 }

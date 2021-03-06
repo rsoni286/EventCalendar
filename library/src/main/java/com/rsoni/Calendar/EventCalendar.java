@@ -2,8 +2,6 @@ package com.rsoni.Calendar;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -19,14 +17,14 @@ import com.rsoni.Calendar.Listener.onDateClickedListener;
 import com.rsoni.Calendar.adapter.CalendarAdapter;
 import com.rsoni.Calendar.model.Event;
 import com.rsoni.Calendar.utils.CalendarUtils;
-import com.rsoni.Calendar.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+
+import static com.rsoni.Calendar.utils.CalendarUtils.getCalendarKey;
 
 public class EventCalendar extends LinearLayout {
     private LinearLayout header;
@@ -73,8 +71,7 @@ public class EventCalendar extends LinearLayout {
         RecyclerView calendar = view.findViewById(R.id.recycleCalendar);
         dates = loadDates(CURRENT_MONTH);
 
-        List<Event> events = new ArrayList<>();
-        calendarAdapter = new CalendarAdapter(getContext(), dates, TEMP_MONTH, events, listener);
+        calendarAdapter = new CalendarAdapter(getContext(), dates, TEMP_MONTH, listener);
         calendar.setHasFixedSize(true);
         calendar.setLayoutManager(new GridLayoutManager(getContext(), 7));
         calendar.setAdapter(calendarAdapter);
@@ -150,20 +147,17 @@ public class EventCalendar extends LinearLayout {
     }
 
     public void setEvents(List<Event> events) {
-        Collections.sort(events, comparator);
-        calendarAdapter.updateEvent(events);
+        calendarAdapter.updateEvent(createEventMap(events));
     }
 
-    Comparator<Event> comparator = new Comparator<Event>() {
-        @Override
-        public int compare(Event e1, Event e2) {
-            Long t1 = e1.getCalendar().getTimeInMillis();
-            Long t2 = e2.getCalendar().getTimeInMillis();
-
-            return t2.compareTo(t1);
-
+    private HashMap<String, Event> createEventMap(List<Event> events) {
+        HashMap<String, Event> eventMap = new HashMap<>();
+        for (Event event : events) {
+            Calendar calendar = event.getCalendar();
+            eventMap.put(getCalendarKey(getContext(), calendar), event);
         }
-    };
+        return eventMap;
+    }
 
     public void setOnDateClickedListener(onDateClickedListener listener) {
         this.listener = listener;
