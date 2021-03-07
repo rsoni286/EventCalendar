@@ -1,13 +1,12 @@
 # EventCalendar
 A simple android calendar library that marks various dates with events on calendar.
 
-Easy to use and customize
+### Customizations supported:
 
-- Can change header color
-
-- Easily set custom events
-
-- OnCLick Listener for each date that returns Event for that day
+- Change header, labels, calendar background to custom drawable or color.
+- Set events which can be highlighted with colors of 3 different shapes (circle,sqaure or rounded square) or with your own custom drawable.
+- Set your own drawable and background for next and prev buttons. 
+- OnCLick Listener for each date that returns Event for that day.
 
 ## Getting Started
 
