@@ -170,7 +170,7 @@ public class EventCalendar extends LinearLayout {
         calendarAdapter.setListener(listener);
     }
 
-    public void setDefaultDayEventShape(EventShape eventShape) {
+    public void setDefaultEventDayShape(EventShape eventShape) {
         calendarAdapter.setDefaultEventShape(eventShape);
     }
 
@@ -178,7 +178,7 @@ public class EventCalendar extends LinearLayout {
         header.setBackground(drawable);
     }
 
-    public void setHeaderBackgroundColor(int color) {
+    public void setHeaderBackgroundColor(@ColorInt int color) {
         header.setBackgroundColor(color);
     }
 
@@ -186,7 +186,7 @@ public class EventCalendar extends LinearLayout {
         dayLabel.setBackground(drawable);
     }
 
-    public void setDayLabelsBackgroundColor(int color) {
+    public void setDayLabelsBackgroundColor(@ColorInt int color) {
         dayLabel.setBackgroundColor(color);
     }
 
@@ -194,7 +194,7 @@ public class EventCalendar extends LinearLayout {
         calendarGrid.setBackground(drawable);
     }
 
-    public void setDatesGridBackgroundColor(int color) {
+    public void setDatesGridBackgroundColor(@ColorInt int color) {
         calendarGrid.setBackgroundColor(color);
     }
 
@@ -218,7 +218,7 @@ public class EventCalendar extends LinearLayout {
         prevBtn.setBackground(drawable);
     }
 
-    public void setPrevBtnBackgroundColor(int color) {
+    public void setPrevBtnBackgroundColor(@ColorInt int color) {
         prevBtn.setBackgroundColor(color);
     }
 
@@ -226,8 +226,25 @@ public class EventCalendar extends LinearLayout {
         nextBtn.setBackground(drawable);
     }
 
-    public void setNextBtnBackgroundColor(int color) {
+    public void setNextBtnBackgroundColor(@ColorInt int color) {
         nextBtn.setBackgroundColor(color);
     }
+
+    public void setNoEventDayBackground(Drawable drawable) {
+        calendarAdapter.setNoEventDayBackground(drawable);
+    }
+
+    public void setNoEventDayBackgroundColor(@ColorInt int color) {
+        calendarAdapter.setNoEventDayBackgroundColor(color);
+    }
+
+    public void setNoEventDayTextColor(@ColorInt int color) {
+        calendarAdapter.setNoEventDayTextColor(color);
+    }
+
+    public void setNoEventDayShape(EventShape shape) {
+        calendarAdapter.setNoEventDayShape(shape);
+    }
+
 
 }

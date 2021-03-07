@@ -1,11 +1,13 @@
 package com.rsoni.Calendar.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,7 +31,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
     private OnDateClickedListener listener;
     private final Context context;
     private final int colorTrans, colorBlack, colorWhite;
-    private EventCalendar.EventShape defaultEventShape;
+    private int noEventBackgroundColor, noEventTextColor;
+    private EventCalendar.EventShape defaultEventShape, noEventShape;
+    private Drawable noEventBackground;
 
     public CalendarAdapter(Context context, ArrayList<EventDate> dates, int currentMonth, OnDateClickedListener listener) {
         this.dates = dates;
@@ -41,6 +45,10 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
         colorBlack = ContextCompat.getColor(context, android.R.color.black);
         colorWhite = ContextCompat.getColor(context, android.R.color.white);
         defaultEventShape = EventCalendar.EventShape.CIRCLE;
+        noEventShape = defaultEventShape;
+        noEventTextColor = colorBlack;
+        noEventBackgroundColor = colorTrans;
+        noEventBackground = null;
     }
 
     @Override
@@ -73,7 +81,11 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
     private void handleEvent(Event event, vh vh) {
         //if no event, just set normal text color
         if (event == null) {
-            GraphicUtils.setDayColor(vh.tv, colorTrans, colorBlack, defaultEventShape);
+            if (noEventBackground == null) {
+                GraphicUtils.setDayColor(vh.tv, noEventBackgroundColor, noEventTextColor, noEventShape);
+            } else {
+                GraphicUtils.setDayDrawable(vh.tv, noEventBackground, noEventTextColor);
+            }
             return;
         }
 
@@ -154,6 +166,26 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
 
     public void setDefaultEventShape(EventCalendar.EventShape eventShape) {
         this.defaultEventShape = eventShape;
+        notifyDataSetChanged();
+    }
+
+    public void setNoEventDayBackground(Drawable drawable) {
+        noEventBackground = drawable;
+        notifyDataSetChanged();
+    }
+
+    public void setNoEventDayBackgroundColor(@ColorInt int color) {
+        noEventBackgroundColor = color;
+        notifyDataSetChanged();
+    }
+
+    public void setNoEventDayTextColor(@ColorInt int color) {
+        noEventTextColor = color;
+        notifyDataSetChanged();
+    }
+
+    public void setNoEventDayShape(EventCalendar.EventShape shape) {
+        noEventShape = shape;
         notifyDataSetChanged();
     }
 }

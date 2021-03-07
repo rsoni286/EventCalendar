@@ -1,6 +1,8 @@
 package com.rsoni.eventcalendar;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,31 +23,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().setStatusBarColor(getColor(android.R.color.white));
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+
 
         //Customize EventCalendar
         EventCalendar eventCalendar = findViewById(R.id.calendar);
-
-        /*
-        //set month header background
-        eventCalendar.setHeaderBackgroundColor(getResources().getColor(R.color.colorAccent));
-        //set saturday label color
-        eventCalendar.setSaturdayLabelColor(getResources().getColor(R.color.colorAccent));
-        //set day labels(sunday to saturday) background
-        eventCalendar.setDayLabelsBackgroundColor(getResources().getColor(R.color.colorAccent));
-        //set calendar dates background
-        eventCalendar.setDatesGridBackgroundColor(getResources().getColor(R.color.colorAccent));
-        //set calendar background(both day labels and dates)
-        eventCalendar.setCalendarBackground(ContextCompat.getDrawable(this, R.drawable.custom_drawable));
-        //set prev/next btn background
-        eventCalendar.setPrevBtnBackground(ContextCompat.getDrawable(this, R.drawable.custom_drawable));
-        eventCalendar.setNextBtnBackground(ContextCompat.getDrawable(this, R.drawable.custom_drawable));
-        */
+        eventCalendar.setHeaderBackground(ContextCompat.getDrawable(this, R.drawable.custom_drawable));
+        eventCalendar.setBackground(ContextCompat.getDrawable(this, R.drawable.accent_border));
 
         //add events
         List<Event> events = new ArrayList<>();
 
-        //set default shape to rounded square
-        eventCalendar.setDefaultDayEventShape(EventCalendar.EventShape.ROUNDED_SQUARE);
+        //set default shape for event days to rounded square
+        eventCalendar.setDefaultEventDayShape(EventCalendar.EventShape.ROUNDED_SQUARE);
+
+        //set default shape for no event days to rounded square
+        eventCalendar.setNoEventDayShape(EventCalendar.EventShape.ROUNDED_SQUARE);
+        eventCalendar.setNoEventDayBackgroundColor(getResources().getColor(R.color.colorAccentLite));
+        eventCalendar.setNoEventDayTextColor(getResources().getColor(R.color.colorAccent));
+        //eventCalendar.setNoEventDayBackground(ContextCompat.getDrawable(this, R.drawable.accent_border));
 
         //calendar for creating event
         Calendar calendar = Calendar.getInstance();
@@ -58,12 +57,7 @@ public class MainActivity extends AppCompatActivity {
             events.add(new Event(eventDate, getResources().getColor(R.color.colorPrimary), EventCalendar.EventShape.CIRCLE));
         }
 
-        //event with square shape and text color
-        for (int i = 0; i < 5; i++) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-            EventDate eventDate = new EventDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));//calendar starts from 0 for january
-            events.add(new Event(eventDate, getResources().getColor(R.color.colorDefault), getResources().getColor(android.R.color.holo_blue_bright), EventCalendar.EventShape.SQUARE));
-        }
+        calendar.add(Calendar.DAY_OF_MONTH, 8);
 
         //event with custom drawable
         for (int i = 0; i < 5; i++) {
