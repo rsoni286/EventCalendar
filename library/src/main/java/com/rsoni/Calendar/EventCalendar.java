@@ -16,11 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.rsoni.Calendar.Listener.onDateClickedListener;
 import com.rsoni.Calendar.adapter.CalendarAdapter;
 import com.rsoni.Calendar.model.Event;
+import com.rsoni.Calendar.model.EventDate;
 import com.rsoni.Calendar.utils.CalendarUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,12 +31,11 @@ public class EventCalendar extends LinearLayout {
         CIRCLE, SQUARE, ROUNDED_SQUARE
     }
 
-
     private LinearLayout header;
     private TextView sTv, monthTv;
     private int CURRENT_MONTH = 0;
     private int TEMP_MONTH;
-    private ArrayList<Date> dates;
+    private ArrayList<EventDate> dates;
     private CalendarAdapter calendarAdapter;
     private onDateClickedListener listener = null;
 
@@ -103,10 +102,8 @@ public class EventCalendar extends LinearLayout {
 
     }
 
-    private ArrayList<Date> loadDates(int current_month) {
-
-
-        ArrayList<Date> days = new ArrayList<>();
+    private ArrayList<EventDate> loadDates(int current_month) {
+        ArrayList<EventDate> days = new ArrayList<>();
 
         // Get Calendar object instance
         Calendar calendar = Calendar.getInstance();
@@ -135,7 +132,7 @@ public class EventCalendar extends LinearLayout {
          */
 
         while (days.size() < 42) {
-            days.add(calendar.getTime());
+            days.add(EventDate.fromCalendar(calendar));
             calendar.add(Calendar.DAY_OF_MONTH, 1);
 
         }
@@ -158,8 +155,7 @@ public class EventCalendar extends LinearLayout {
     private HashMap<String, Event> createEventMap(List<Event> events) {
         HashMap<String, Event> eventMap = new HashMap<>();
         for (Event event : events) {
-            Calendar calendar = event.getCalendar();
-            eventMap.put(getCalendarKey(getContext(), calendar), event);
+            eventMap.put(getCalendarKey(getContext(), event.getEventDate()), event);
         }
         return eventMap;
     }

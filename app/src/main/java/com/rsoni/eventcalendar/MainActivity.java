@@ -1,7 +1,6 @@
 package com.rsoni.eventcalendar;
 
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.rsoni.Calendar.EventCalendar;
 import com.rsoni.Calendar.Listener.onDateClickedListener;
 import com.rsoni.Calendar.model.Event;
+import com.rsoni.Calendar.model.EventDate;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,18 +28,18 @@ public class MainActivity extends AppCompatActivity {
         List<Event> events = new ArrayList<>();
 
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        events.add(new Event(calendar, getResources().getColor(R.color.colorPrimary)));
+        EventDate eventDate = new EventDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));//calendar starts from 0 for january
+        events.add(new Event(eventDate, getResources().getColor(R.color.colorPrimary)));
 
-        Calendar calendar1 = Calendar.getInstance();
-        calendar1.set(Calendar.DAY_OF_MONTH, 22);
-        events.add(new Event(calendar1, getResources().getColor(R.color.colorDefault)));
+        calendar.set(Calendar.DAY_OF_MONTH, 22);
+        EventDate eventDate1 = new EventDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
+        events.add(new Event(eventDate1, getResources().getColor(R.color.colorDefault)));
 
 
         for (int i = 0; i < 10; i++) {
-            Calendar calendar3 = Calendar.getInstance();
-            calendar3.add(Calendar.DAY_OF_MONTH, i + 1);
-            events.add(new Event(calendar3, getResources().getColor(R.color.colorAccent), getResources().getColor(android.R.color.holo_blue_bright)));
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            EventDate eventDate2 = new EventDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
+            events.add(new Event(eventDate2, getResources().getColor(R.color.colorAccent), getResources().getColor(android.R.color.holo_blue_bright)));
         }
 
         eventCalendar.setDayEventShape(EventCalendar.EventShape.ROUNDED_SQUARE);
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         eventCalendar.setOnDateClickedListener(new onDateClickedListener() {
             @Override
             public void onDateClicked(Event event) {
-                Toast.makeText(MainActivity.this, DateFormat.format("yyyy-MM-dd", event.getCalendar().getTime()), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, event.getEventDate().getYear() + "-" + event.getEventDate().getMonth() + "-" + event.getEventDate().getDay(), Toast.LENGTH_SHORT).show();
             }
         });
 

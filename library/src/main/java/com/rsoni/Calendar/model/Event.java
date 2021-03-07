@@ -5,11 +5,9 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 
-import java.util.Calendar;
-
 public class Event {
     @NonNull
-    private Calendar calendar;
+    private EventDate eventDate;
 
     @ColorInt
     private Integer color;
@@ -19,24 +17,24 @@ public class Event {
 
     private Drawable drawable;
 
-    public Event(@NonNull Calendar calendar, Integer color) {
+    public Event(@NonNull EventDate eventDate, Integer color) {
         this.color = color;
-        this.calendar = calendar;
+        this.eventDate = eventDate;
     }
 
-    public Event(@NonNull Calendar calendar, Drawable drawable) {
-        this.calendar = calendar;
+    public Event(@NonNull EventDate eventDate, Drawable drawable) {
+        this.eventDate = eventDate;
         this.drawable = drawable;
     }
 
-    public Event(@NonNull Calendar calendar, Integer color, Integer textColor) {
+    public Event(@NonNull EventDate eventDate, Integer color, Integer textColor) {
         this.color = color;
-        this.calendar = calendar;
+        this.eventDate = eventDate;
         this.textColor = textColor;
     }
 
-    public Event(@NonNull Calendar calendar, Drawable drawable, Integer textColor) {
-        this.calendar = calendar;
+    public Event(@NonNull EventDate eventDate, Drawable drawable, Integer textColor) {
+        this.eventDate = eventDate;
         this.drawable = drawable;
         this.textColor = textColor;
     }
@@ -58,12 +56,12 @@ public class Event {
     }
 
     @NonNull
-    public Calendar getCalendar() {
-        return calendar;
+    public EventDate getEventDate() {
+        return eventDate;
     }
 
-    public void setCalendar(@NonNull Calendar calendar) {
-        this.calendar = calendar;
+    public void setEventDate(@NonNull EventDate eventDate) {
+        this.eventDate = eventDate;
     }
 
     public Drawable getDrawable() {
@@ -73,4 +71,5 @@ public class Event {
     public void setDrawable(Drawable drawable) {
         this.drawable = drawable;
     }
+
 }

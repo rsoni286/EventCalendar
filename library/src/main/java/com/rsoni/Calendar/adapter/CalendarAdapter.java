@@ -14,32 +14,29 @@ import com.rsoni.Calendar.EventCalendar;
 import com.rsoni.Calendar.Listener.onDateClickedListener;
 import com.rsoni.Calendar.R;
 import com.rsoni.Calendar.model.Event;
+import com.rsoni.Calendar.model.EventDate;
 import com.rsoni.Calendar.utils.CalendarUtils;
 import com.rsoni.Calendar.utils.GraphicUtils;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
-    private ArrayList<Date> dates;
+    private ArrayList<EventDate> dates;
     private HashMap<String, Event> eventMap;
     private int currentMonth;
     private onDateClickedListener listener;
     private final Context context;
-    private final Calendar checkCalendar;
     private final int colorTrans, colorBlack, colorWhite;
     private EventCalendar.EventShape eventShape;
 
-    public CalendarAdapter(Context context, ArrayList<Date> dates, int currentMonth, onDateClickedListener listener) {
+    public CalendarAdapter(Context context, ArrayList<EventDate> dates, int currentMonth, onDateClickedListener listener) {
         this.dates = dates;
         this.currentMonth = currentMonth;
         this.context = context;
         this.eventMap = new HashMap<>();
         this.listener = listener;
-        checkCalendar = Calendar.getInstance();
         colorTrans = ContextCompat.getColor(context, android.R.color.transparent);
         colorBlack = ContextCompat.getColor(context, android.R.color.black);
         colorWhite = ContextCompat.getColor(context, android.R.color.white);
@@ -65,12 +62,11 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
 
     @Override
     public void onBindViewHolder(@NonNull CalendarAdapter.vh vh, int i) {
-        checkCalendar.setTime(dates.get(i));
+        EventDate eventDate = dates.get(i);
+        vh.tv.setText(String.valueOf(eventDate.getDay()));
+        vh.tv.setAlpha(isCurrentMonth(eventDate) ? 1.0f : 0.12f);
 
-        vh.tv.setText(String.valueOf(checkCalendar.get(Calendar.DAY_OF_MONTH)));
-        vh.tv.setAlpha(isCurrentMonth(checkCalendar) ? 1.0f : 0.12f);
-
-        Event event = eventMap.get(CalendarUtils.getCalendarKey(context, checkCalendar));
+        Event event = eventMap.get(CalendarUtils.getCalendarKey(context, eventDate));
         handleEvent(event, vh);
     }
 
@@ -90,8 +86,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
         }
     }
 
-    private boolean isCurrentMonth(Calendar calendar) {
-        return calendar.get(Calendar.MONTH) == currentMonth;
+    private boolean isCurrentMonth(EventDate eventDate) {
+        return eventDate.getMonth() == currentMonth + 1;
     }
 
 
@@ -101,7 +97,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
     }
 
 
-    public void updateDate(ArrayList<Date> dates) {
+    public void updateDate(ArrayList<EventDate> dates) {
         this.dates = dates;
         notifyDataSetChanged();
     }
@@ -143,17 +139,15 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
     }
 
     private void notifyListener(int position) {
-        Date date = dates.get(position);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
+        EventDate date = dates.get(position);
 
-        Event event = eventMap.get(CalendarUtils.getCalendarKey(context, calendar));
+        Event event = eventMap.get(CalendarUtils.getCalendarKey(context, date));
 
         if (listener != null) {
             if (event != null) {
                 listener.onDateClicked(event);
             } else {
-                listener.onDateClicked(new Event(calendar, 0));
+                listener.onDateClicked(new Event(date, 0));
             }
         }
     }
