@@ -24,7 +24,7 @@ Step 2. Add the dependency
 
 ```
 	dependencies {
-	        implementation 'com.github.rsoni286:EventCalendar:1.1.6'
+	        implementation 'com.github.rsoni286:EventCalendar:1.1.7'
 	}
 ```
 ## Add to xml
