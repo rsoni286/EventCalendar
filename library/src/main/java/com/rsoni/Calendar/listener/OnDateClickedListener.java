@@ -1,7 +1,7 @@
-package com.rsoni.Calendar.Listener;
+package com.rsoni.Calendar.listener;
 
 import com.rsoni.Calendar.model.Event;
 
-public interface onDateClickedListener {
+public interface OnDateClickedListener {
     void onDateClicked(Event event);
 }

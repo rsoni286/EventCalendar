@@ -10,31 +10,37 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-import com.rsoni.Calendar.Listener.onDateClickedListener;
+import com.rsoni.Calendar.EventCalendar;
 import com.rsoni.Calendar.R;
+import com.rsoni.Calendar.listener.OnDateClickedListener;
 import com.rsoni.Calendar.model.Event;
-import com.rsoni.Calendar.utils.ColorUtils;
+import com.rsoni.Calendar.model.EventDate;
+import com.rsoni.Calendar.utils.CalendarUtils;
+import com.rsoni.Calendar.utils.GraphicUtils;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
 
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
-    private ArrayList<Date> dates;
-    private List<Event> events;
-    private Context context;
+    private ArrayList<EventDate> dates;
+    private HashMap<String, Event> eventMap;
     private int currentMonth;
-    private onDateClickedListener listener;
+    private OnDateClickedListener listener;
+    private final Context context;
+    private final int colorTrans, colorBlack, colorWhite;
+    private EventCalendar.EventShape defaultEventShape;
 
-    public CalendarAdapter(Context context, ArrayList<Date> dates, int currentMonth, List<Event> events, onDateClickedListener listener) {
+    public CalendarAdapter(Context context, ArrayList<EventDate> dates, int currentMonth, OnDateClickedListener listener) {
         this.dates = dates;
         this.currentMonth = currentMonth;
         this.context = context;
-        this.events = events;
+        this.eventMap = new HashMap<>();
         this.listener = listener;
+        colorTrans = ContextCompat.getColor(context, android.R.color.transparent);
+        colorBlack = ContextCompat.getColor(context, android.R.color.black);
+        colorWhite = ContextCompat.getColor(context, android.R.color.white);
+        defaultEventShape = EventCalendar.EventShape.CIRCLE;
     }
 
     @Override
@@ -56,42 +62,32 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
 
     @Override
     public void onBindViewHolder(@NonNull CalendarAdapter.vh vh, int i) {
-        final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(dates.get(i));
+        EventDate eventDate = dates.get(i);
+        vh.tv.setText(String.valueOf(eventDate.getDay()));
+        vh.tv.setAlpha(isCurrentMonth(eventDate) ? 1.0f : 0.12f);
 
-        vh.tv.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
-        ColorUtils.setDayColor(context, vh.tv, ContextCompat.getColor(context, android.R.color.transparent));
-        vh.tv.setTextColor(ContextCompat.getColor(context, android.R.color.black));
-
-        Event temp = null;
-        for (Event event : events) {
-            if (event.getCalendar().getTimeInMillis() == calendar.getTimeInMillis()) {
-                ColorUtils.setDayColor(context, vh.tv, event.getColor());
-                temp = event;
-                break;
-            }
-        }
-
-        if (!isCurrentMonth(calendar)) vh.tv.setAlpha(0.12f);
-        else vh.tv.setAlpha(1.0f);
-
-        final Event finalTemp = temp;
-        vh.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    if (finalTemp != null) {
-                        listener.onDateClicked(finalTemp);
-                    } else {
-                        listener.onDateClicked(new Event(calendar, 0));
-                    }
-                }
-            }
-        });
+        Event event = eventMap.get(CalendarUtils.getCalendarKey(context, eventDate));
+        handleEvent(event, vh);
     }
 
-    private boolean isCurrentMonth(Calendar calendar) {
-        return calendar.get(Calendar.MONTH) == currentMonth;
+    private void handleEvent(Event event, vh vh) {
+        //if no event, just set normal text color
+        if (event == null) {
+            GraphicUtils.setDayColor(vh.tv, colorTrans, colorBlack, defaultEventShape);
+            return;
+        }
+
+        if (event.getColor() != null) {
+            GraphicUtils.setDayColor(vh.tv, event.getColor(), event.getTextColor() == null ? colorWhite : event.getTextColor(), event.getEventShape() == null ? defaultEventShape : event.getEventShape());
+        } else if (event.getDrawable() != null) {
+            GraphicUtils.setDayDrawable(vh.tv, event.getDrawable(), event.getTextColor() == null ? colorWhite : event.getTextColor());
+        } else {
+            vh.tv.setTextColor(event.getTextColor() == null ? colorBlack : event.getTextColor());
+        }
+    }
+
+    private boolean isCurrentMonth(EventDate eventDate) {
+        return eventDate.getMonth() == currentMonth + 1;
     }
 
 
@@ -101,7 +97,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
     }
 
 
-    public void updateDate(ArrayList<Date> dates) {
+    public void updateDate(ArrayList<EventDate> dates) {
         this.dates = dates;
         notifyDataSetChanged();
     }
@@ -111,12 +107,12 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
         notifyDataSetChanged();
     }
 
-    public void updateEvent(List<Event> events) {
-        this.events = events;
+    public void updateEvent(HashMap<String, Event> eventMap) {
+        this.eventMap = eventMap;
         notifyDataSetChanged();
     }
 
-    public void setListener(onDateClickedListener listener) {
+    public void setListener(OnDateClickedListener listener) {
         this.listener = listener;
         notifyDataSetChanged();
     }
@@ -129,8 +125,35 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
             super(itemView);
             view = itemView;
             tv = view.findViewById(R.id.tv_date);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (position == RecyclerView.NO_POSITION) return;
+
+                    notifyListener(position);
+                }
+            });
         }
     }
 
+    private void notifyListener(int position) {
+        EventDate date = dates.get(position);
 
+        Event event = eventMap.get(CalendarUtils.getCalendarKey(context, date));
+
+        if (listener != null) {
+            if (event != null) {
+                listener.onDateClicked(event);
+            } else {
+                listener.onDateClicked(new Event(date, 0));
+            }
+        }
+    }
+
+    public void setDefaultEventShape(EventCalendar.EventShape eventShape) {
+        this.defaultEventShape = eventShape;
+        notifyDataSetChanged();
+    }
 }
