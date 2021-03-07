@@ -54,27 +54,22 @@ Step 2. Add the dependency
 ```
     //EventCalendar
 
-        EventCalendar calendar = findViewById(R.id.calendar);
-        
-	//set month header background
-        eventCalendar.setHeaderBackgroundColor(getResources().getColor(R.color.colorAccent));
-        //set saturday label color
-        eventCalendar.setSaturdayLabelColor(getResources().getColor(R.color.colorAccent));
-        //set day labels(sunday to saturday) background
-        eventCalendar.setDayLabelsBackgroundColor(getResources().getColor(R.color.colorAccent));
-        //set calendar dates background
-        eventCalendar.setDatesGridBackgroundColor(getResources().getColor(R.color.colorAccent));
-        //set calendar background(both day labels and dates)
-        eventCalendar.setCalendarBackground(ContextCompat.getDrawable(this, R.drawable.custom_drawable));
-        //set prev/next btn background
-        eventCalendar.setPrevBtnBackground(ContextCompat.getDrawable(this, R.drawable.custom_drawable));
-        eventCalendar.setNextBtnBackground(ContextCompat.getDrawable(this, R.drawable.custom_drawable));
+        //Customize EventCalendar
+        EventCalendar eventCalendar = findViewById(R.id.calendar);
+        eventCalendar.setHeaderBackground(ContextCompat.getDrawable(this, R.drawable.custom_drawable));
+        eventCalendar.setBackground(ContextCompat.getDrawable(this, R.drawable.accent_border));
 
         //add events
         List<Event> events = new ArrayList<>();
 
-        //set default shape to rounded square
-        eventCalendar.setDefaultDayEventShape(EventCalendar.EventShape.ROUNDED_SQUARE);
+        //set default shape for event days to rounded square
+        eventCalendar.setDefaultEventDayShape(EventCalendar.EventShape.ROUNDED_SQUARE);
+
+        //set default shape for no event days to rounded square
+        eventCalendar.setNoEventDayShape(EventCalendar.EventShape.ROUNDED_SQUARE);
+        eventCalendar.setNoEventDayBackgroundColor(getResources().getColor(R.color.colorAccentLite));
+        eventCalendar.setNoEventDayTextColor(getResources().getColor(R.color.colorAccent));
+        //eventCalendar.setNoEventDayBackground(ContextCompat.getDrawable(this, R.drawable.accent_border));
 
         //calendar for creating event
         Calendar calendar = Calendar.getInstance();
@@ -87,12 +82,7 @@ Step 2. Add the dependency
             events.add(new Event(eventDate, getResources().getColor(R.color.colorPrimary), EventCalendar.EventShape.CIRCLE));
         }
 
-        //event with square shape and text color
-        for (int i = 0; i < 5; i++) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-            EventDate eventDate = new EventDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));//calendar starts from 0 for january
-            events.add(new Event(eventDate, getResources().getColor(R.color.colorDefault), getResources().getColor(android.R.color.holo_blue_bright), EventCalendar.EventShape.SQUARE));
-        }
+        calendar.add(Calendar.DAY_OF_MONTH, 8);
 
         //event with custom drawable
         for (int i = 0; i < 5; i++) {
@@ -120,7 +110,7 @@ Step 2. Add the dependency
         eventCalendar.setEvents(events);
 
 
-        //onDateClickListener
+        //OnDateClickListener
         eventCalendar.setOnDateClickedListener(new OnDateClickedListener() {
             @Override
             public void onDateClicked(Event event) {
@@ -128,4 +118,29 @@ Step 2. Add the dependency
             }
         });
 ```
+
+## Samples
+
+1. With 
+```
+	eventCalendar.setNoEventDayShape(EventCalendar.EventShape.ROUNDED_SQUARE);
+        eventCalendar.setNoEventDayBackgroundColor(getResources().getColor(R.color.colorAccentLite));
+        eventCalendar.setNoEventDayTextColor(getResources().getColor(R.color.colorAccent));
+```
+![Screenshot_2021-03-07-13-42-40-84_3c61661eb8ed31f8834d96ff0fcb3e10](https://user-images.githubusercontent.com/47516112/110233380-b754e100-7f4b-11eb-810e-076ac2f79c2c.jpg)
+
+2. With 
+```
+	eventCalendar.setNoEventDayShape(EventCalendar.EventShape.ROUNDED_SQUARE);
+        eventCalendar.setNoEventDayBackgroundColor(getResources().getColor(R.color.colorAccentLite));
+```
+![Screenshot_2021-03-07-13-41-56-37_3c61661eb8ed31f8834d96ff0fcb3e10](https://user-images.githubusercontent.com/47516112/110233394-e1a69e80-7f4b-11eb-926a-c9cc4eaeccb0.jpg)
+
+3. With
+```
+	eventCalendar.setNoEventDayBackground(ContextCompat.getDrawable(this, R.drawable.accent_border));
+```
+      ![Screenshot_2021-03-07-13-41-33-23_3c61661eb8ed31f8834d96ff0fcb3e10](https://user-images.githubusercontent.com/47516112/110233410-fe42d680-7f4b-11eb-8535-dee668265c8b.jpg)
+
+
 
