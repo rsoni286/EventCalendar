@@ -2,7 +2,6 @@ package com.rsoni.Calendar;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -12,30 +11,39 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.rsoni.Calendar.Listener.onDateClickedListener;
 import com.rsoni.Calendar.adapter.CalendarAdapter;
+import com.rsoni.Calendar.listener.OnDateClickedListener;
 import com.rsoni.Calendar.model.Event;
+import com.rsoni.Calendar.model.EventDate;
 import com.rsoni.Calendar.utils.CalendarUtils;
-import com.rsoni.Calendar.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
+import static com.rsoni.Calendar.utils.CalendarUtils.getCalendarKey;
+
 public class EventCalendar extends LinearLayout {
-    private LinearLayout header;
+
+    public enum EventShape {
+        CIRCLE, SQUARE, ROUNDED_SQUARE
+    }
+
+    private LinearLayout header, dayLabel, calendar;
+    private RecyclerView calendarGrid;
     private TextView sTv, monthTv;
+    private ImageButton prevBtn;
+    private ImageButton nextBtn;
     private int CURRENT_MONTH = 0;
     private int TEMP_MONTH;
-    private ArrayList<Date> dates;
+    private ArrayList<EventDate> dates;
     private CalendarAdapter calendarAdapter;
-    private onDateClickedListener listener = null;
+    private OnDateClickedListener listener = null;
 
     public EventCalendar(Context context) {
         super(context);
@@ -66,18 +74,20 @@ public class EventCalendar extends LinearLayout {
 
     private void initElements(View view) {
         header = view.findViewById(R.id.header);
+        dayLabel = view.findViewById(R.id.header_days);
+        calendar = view.findViewById(R.id.calendar_layout);
         sTv = view.findViewById(R.id.tv_sat);
         monthTv = view.findViewById(R.id.tvMonth);
-        ImageButton prevBtn = view.findViewById(R.id.btnPrev);
-        ImageButton nextBtn = view.findViewById(R.id.btnNext);
-        RecyclerView calendar = view.findViewById(R.id.recycleCalendar);
+        prevBtn = view.findViewById(R.id.btnPrev);
+        nextBtn = view.findViewById(R.id.btnNext);
+        calendarGrid = view.findViewById(R.id.recycleCalendar);
+
         dates = loadDates(CURRENT_MONTH);
 
-        List<Event> events = new ArrayList<>();
-        calendarAdapter = new CalendarAdapter(getContext(), dates, TEMP_MONTH, events, listener);
-        calendar.setHasFixedSize(true);
-        calendar.setLayoutManager(new GridLayoutManager(getContext(), 7));
-        calendar.setAdapter(calendarAdapter);
+        calendarAdapter = new CalendarAdapter(getContext(), dates, TEMP_MONTH, listener);
+        calendarGrid.setHasFixedSize(true);
+        calendarGrid.setLayoutManager(new GridLayoutManager(getContext(), 7));
+        calendarGrid.setAdapter(calendarAdapter);
 
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,10 +111,8 @@ public class EventCalendar extends LinearLayout {
 
     }
 
-    private ArrayList<Date> loadDates(int current_month) {
-
-
-        ArrayList<Date> days = new ArrayList<>();
+    private ArrayList<EventDate> loadDates(int current_month) {
+        ArrayList<EventDate> days = new ArrayList<>();
 
         // Get Calendar object instance
         Calendar calendar = Calendar.getInstance();
@@ -133,7 +141,7 @@ public class EventCalendar extends LinearLayout {
          */
 
         while (days.size() < 42) {
-            days.add(calendar.getTime());
+            days.add(EventDate.fromCalendar(calendar));
             calendar.add(Calendar.DAY_OF_MONTH, 1);
 
         }
@@ -141,32 +149,85 @@ public class EventCalendar extends LinearLayout {
         return days;
     }
 
-    public void setHeaderColor(int color) {
-        header.setBackgroundColor(color);
-    }
-
     public void setSaturdayLabelColor(int color) {
         sTv.setTextColor(color);
     }
 
     public void setEvents(List<Event> events) {
-        Collections.sort(events, comparator);
-        calendarAdapter.updateEvent(events);
+        calendarAdapter.updateEvent(createEventMap(events));
     }
 
-    Comparator<Event> comparator = new Comparator<Event>() {
-        @Override
-        public int compare(Event e1, Event e2) {
-            Long t1 = e1.getCalendar().getTimeInMillis();
-            Long t2 = e2.getCalendar().getTimeInMillis();
-
-            return t2.compareTo(t1);
-
+    private HashMap<String, Event> createEventMap(List<Event> events) {
+        HashMap<String, Event> eventMap = new HashMap<>();
+        for (Event event : events) {
+            eventMap.put(getCalendarKey(getContext(), event.getEventDate()), event);
         }
-    };
+        return eventMap;
+    }
 
-    public void setOnDateClickedListener(onDateClickedListener listener) {
+    public void setOnDateClickedListener(OnDateClickedListener listener) {
         this.listener = listener;
         calendarAdapter.setListener(listener);
     }
+
+    public void setDefaultDayEventShape(EventShape eventShape) {
+        calendarAdapter.setDefaultEventShape(eventShape);
+    }
+
+    public void setHeaderBackground(Drawable drawable) {
+        header.setBackground(drawable);
+    }
+
+    public void setHeaderBackgroundColor(int color) {
+        header.setBackgroundColor(color);
+    }
+
+    public void setDayLabelsBackground(Drawable drawable) {
+        dayLabel.setBackground(drawable);
+    }
+
+    public void setDayLabelsBackgroundColor(int color) {
+        dayLabel.setBackgroundColor(color);
+    }
+
+    public void setDatesGridBackground(Drawable drawable) {
+        calendarGrid.setBackground(drawable);
+    }
+
+    public void setDatesGridBackgroundColor(int color) {
+        calendarGrid.setBackgroundColor(color);
+    }
+
+    public void setCalendarBackground(Drawable drawable) {
+        calendar.setBackground(drawable);
+    }
+
+    public void setCalendarBackgroundColor(@ColorInt int color) {
+        calendar.setBackgroundColor(color);
+    }
+
+    public void setPrevBtnSrc(Drawable drawable) {
+        prevBtn.setImageDrawable(drawable);
+    }
+
+    public void setNextBtnSrc(Drawable drawable) {
+        nextBtn.setImageDrawable(drawable);
+    }
+
+    public void setPrevBtnBackground(Drawable drawable) {
+        prevBtn.setBackground(drawable);
+    }
+
+    public void setPrevBtnBackgroundColor(int color) {
+        prevBtn.setBackgroundColor(color);
+    }
+
+    public void setNextBtnBackground(Drawable drawable) {
+        nextBtn.setBackground(drawable);
+    }
+
+    public void setNextBtnBackgroundColor(int color) {
+        nextBtn.setBackgroundColor(color);
+    }
+
 }
