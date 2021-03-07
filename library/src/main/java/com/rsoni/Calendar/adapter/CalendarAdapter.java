@@ -11,8 +11,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rsoni.Calendar.EventCalendar;
-import com.rsoni.Calendar.Listener.onDateClickedListener;
 import com.rsoni.Calendar.R;
+import com.rsoni.Calendar.listener.OnDateClickedListener;
 import com.rsoni.Calendar.model.Event;
 import com.rsoni.Calendar.model.EventDate;
 import com.rsoni.Calendar.utils.CalendarUtils;
@@ -26,12 +26,12 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
     private ArrayList<EventDate> dates;
     private HashMap<String, Event> eventMap;
     private int currentMonth;
-    private onDateClickedListener listener;
+    private OnDateClickedListener listener;
     private final Context context;
     private final int colorTrans, colorBlack, colorWhite;
-    private EventCalendar.EventShape eventShape;
+    private EventCalendar.EventShape defaultEventShape;
 
-    public CalendarAdapter(Context context, ArrayList<EventDate> dates, int currentMonth, onDateClickedListener listener) {
+    public CalendarAdapter(Context context, ArrayList<EventDate> dates, int currentMonth, OnDateClickedListener listener) {
         this.dates = dates;
         this.currentMonth = currentMonth;
         this.context = context;
@@ -40,7 +40,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
         colorTrans = ContextCompat.getColor(context, android.R.color.transparent);
         colorBlack = ContextCompat.getColor(context, android.R.color.black);
         colorWhite = ContextCompat.getColor(context, android.R.color.white);
-        eventShape = EventCalendar.EventShape.CIRCLE;
+        defaultEventShape = EventCalendar.EventShape.CIRCLE;
     }
 
     @Override
@@ -73,12 +73,12 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
     private void handleEvent(Event event, vh vh) {
         //if no event, just set normal text color
         if (event == null) {
-            GraphicUtils.setDayColor(vh.tv, colorTrans, colorBlack, eventShape);
+            GraphicUtils.setDayColor(vh.tv, colorTrans, colorBlack, defaultEventShape);
             return;
         }
 
         if (event.getColor() != null) {
-            GraphicUtils.setDayColor(vh.tv, event.getColor(), event.getTextColor() == null ? colorWhite : event.getTextColor(), eventShape);
+            GraphicUtils.setDayColor(vh.tv, event.getColor(), event.getTextColor() == null ? colorWhite : event.getTextColor(), event.getEventShape() == null ? defaultEventShape : event.getEventShape());
         } else if (event.getDrawable() != null) {
             GraphicUtils.setDayDrawable(vh.tv, event.getDrawable(), event.getTextColor() == null ? colorWhite : event.getTextColor());
         } else {
@@ -112,7 +112,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
         notifyDataSetChanged();
     }
 
-    public void setListener(onDateClickedListener listener) {
+    public void setListener(OnDateClickedListener listener) {
         this.listener = listener;
         notifyDataSetChanged();
     }
@@ -152,8 +152,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.vh> {
         }
     }
 
-    public void setEventShape(EventCalendar.EventShape eventShape) {
-        this.eventShape = eventShape;
+    public void setDefaultEventShape(EventCalendar.EventShape eventShape) {
+        this.defaultEventShape = eventShape;
         notifyDataSetChanged();
     }
 }

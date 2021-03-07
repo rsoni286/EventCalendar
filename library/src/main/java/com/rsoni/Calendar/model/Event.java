@@ -5,21 +5,28 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 
+import com.rsoni.Calendar.EventCalendar;
+
 public class Event {
     @NonNull
     private EventDate eventDate;
-
     @ColorInt
     private Integer color;
-
     @ColorInt
     private Integer textColor;
-
     private Drawable drawable;
+
+    private EventCalendar.EventShape eventShape;
 
     public Event(@NonNull EventDate eventDate, Integer color) {
         this.color = color;
         this.eventDate = eventDate;
+    }
+
+    public Event(@NonNull EventDate eventDate, Integer color, EventCalendar.EventShape eventShape) {
+        this.color = color;
+        this.eventDate = eventDate;
+        this.eventShape = eventShape;
     }
 
     public Event(@NonNull EventDate eventDate, Drawable drawable) {
@@ -31,6 +38,13 @@ public class Event {
         this.color = color;
         this.eventDate = eventDate;
         this.textColor = textColor;
+    }
+
+    public Event(@NonNull EventDate eventDate, Integer color, Integer textColor, EventCalendar.EventShape eventShape) {
+        this.color = color;
+        this.eventDate = eventDate;
+        this.textColor = textColor;
+        this.eventShape = eventShape;
     }
 
     public Event(@NonNull EventDate eventDate, Drawable drawable, Integer textColor) {
@@ -72,4 +86,11 @@ public class Event {
         this.drawable = drawable;
     }
 
+    public EventCalendar.EventShape getEventShape() {
+        return eventShape;
+    }
+
+    public void setEventShape(EventCalendar.EventShape eventShape) {
+        this.eventShape = eventShape;
+    }
 }

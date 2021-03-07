@@ -4,9 +4,10 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.rsoni.Calendar.EventCalendar;
-import com.rsoni.Calendar.Listener.onDateClickedListener;
+import com.rsoni.Calendar.listener.OnDateClickedListener;
 import com.rsoni.Calendar.model.Event;
 import com.rsoni.Calendar.model.EventDate;
 
@@ -27,28 +28,55 @@ public class MainActivity extends AppCompatActivity {
         //create events list
         List<Event> events = new ArrayList<>();
 
+        //set default shape to rounded square
+        eventCalendar.setDefaultDayEventShape(EventCalendar.EventShape.ROUNDED_SQUARE);
+
+        //calendar for creating event
         Calendar calendar = Calendar.getInstance();
-        EventDate eventDate = new EventDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));//calendar starts from 0 for january
-        events.add(new Event(eventDate, getResources().getColor(R.color.colorPrimary)));
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
 
-        calendar.set(Calendar.DAY_OF_MONTH, 22);
-        EventDate eventDate1 = new EventDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
-        events.add(new Event(eventDate1, getResources().getColor(R.color.colorDefault)));
-
-
-        for (int i = 0; i < 10; i++) {
+        //event with circle shape
+        for (int i = 0; i < 5; i++) {
             calendar.add(Calendar.DAY_OF_MONTH, 1);
-            EventDate eventDate2 = new EventDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
-            events.add(new Event(eventDate2, getResources().getColor(R.color.colorAccent), getResources().getColor(android.R.color.holo_blue_bright)));
+            EventDate eventDate = new EventDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));//calendar starts from 0 for january
+            events.add(new Event(eventDate, getResources().getColor(R.color.colorPrimary), EventCalendar.EventShape.CIRCLE));
         }
 
-        eventCalendar.setDayEventShape(EventCalendar.EventShape.ROUNDED_SQUARE);
+        //event with square shape and text color
+        for (int i = 0; i < 5; i++) {
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            EventDate eventDate = new EventDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));//calendar starts from 0 for january
+            events.add(new Event(eventDate, getResources().getColor(R.color.colorDefault), getResources().getColor(android.R.color.holo_blue_bright), EventCalendar.EventShape.SQUARE));
+        }
+
+        //event with custom drawable
+        for (int i = 0; i < 5; i++) {
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            EventDate eventDate2 = EventDate.fromCalendar(calendar);
+            events.add(new Event(eventDate2, ContextCompat.getDrawable(this, R.drawable.custom_drawable)));
+        }
+
+        //event with custom drawable and text color
+        for (int i = 0; i < 5; i++) {
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            EventDate eventDate2 = EventDate.fromCalendar(calendar);
+            events.add(new Event(eventDate2, ContextCompat.getDrawable(this, R.drawable.custom_drawable), getResources().getColor(R.color.colorAccent)));
+        }
+
+        calendar.add(Calendar.DAY_OF_MONTH, 2);
+        //event with only background color and default shape
+        for (int i = 0; i < 5; i++) {
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            EventDate eventDate2 = new EventDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
+            events.add(new Event(eventDate2, getResources().getColor(R.color.colorAccent)));
+        }
+
         //Set events to calendar
         eventCalendar.setEvents(events);
 
 
         //onDateClickListener
-        eventCalendar.setOnDateClickedListener(new onDateClickedListener() {
+        eventCalendar.setOnDateClickedListener(new OnDateClickedListener() {
             @Override
             public void onDateClicked(Event event) {
                 Toast.makeText(MainActivity.this, event.getEventDate().getYear() + "-" + event.getEventDate().getMonth() + "-" + event.getEventDate().getDay(), Toast.LENGTH_SHORT).show();

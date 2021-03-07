@@ -13,8 +13,8 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.rsoni.Calendar.Listener.onDateClickedListener;
 import com.rsoni.Calendar.adapter.CalendarAdapter;
+import com.rsoni.Calendar.listener.OnDateClickedListener;
 import com.rsoni.Calendar.model.Event;
 import com.rsoni.Calendar.model.EventDate;
 import com.rsoni.Calendar.utils.CalendarUtils;
@@ -37,7 +37,7 @@ public class EventCalendar extends LinearLayout {
     private int TEMP_MONTH;
     private ArrayList<EventDate> dates;
     private CalendarAdapter calendarAdapter;
-    private onDateClickedListener listener = null;
+    private OnDateClickedListener listener = null;
 
     public EventCalendar(Context context) {
         super(context);
@@ -160,13 +160,13 @@ public class EventCalendar extends LinearLayout {
         return eventMap;
     }
 
-    public void setOnDateClickedListener(onDateClickedListener listener) {
+    public void setOnDateClickedListener(OnDateClickedListener listener) {
         this.listener = listener;
         calendarAdapter.setListener(listener);
     }
 
-    public void setDayEventShape(EventShape eventShape) {
-        calendarAdapter.setEventShape(eventShape);
+    public void setDefaultDayEventShape(EventShape eventShape) {
+        calendarAdapter.setDefaultEventShape(eventShape);
     }
 
 
