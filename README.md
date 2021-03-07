@@ -140,7 +140,7 @@ Step 2. Add the dependency
 ```
 	eventCalendar.setNoEventDayBackground(ContextCompat.getDrawable(this, R.drawable.accent_border));
 ```
-      ![Screenshot_2021-03-07-13-41-33-23_3c61661eb8ed31f8834d96ff0fcb3e10](https://user-images.githubusercontent.com/47516112/110233410-fe42d680-7f4b-11eb-8535-dee668265c8b.jpg)
+![Screenshot_2021-03-07-13-41-33-23_3c61661eb8ed31f8834d96ff0fcb3e10](https://user-images.githubusercontent.com/47516112/110233410-fe42d680-7f4b-11eb-8535-dee668265c8b.jpg)
 
 
 
