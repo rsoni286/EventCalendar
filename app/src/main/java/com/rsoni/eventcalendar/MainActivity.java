@@ -22,10 +22,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //EventCalendar
+        //Customize EventCalendar
         EventCalendar eventCalendar = findViewById(R.id.calendar);
 
-        //create events list
+        /*
+        //set month header background
+        eventCalendar.setHeaderBackgroundColor(getResources().getColor(R.color.colorAccent));
+        //set saturday label color
+        eventCalendar.setSaturdayLabelColor(getResources().getColor(R.color.colorAccent));
+        //set day labels(sunday to saturday) background
+        eventCalendar.setDayLabelsBackgroundColor(getResources().getColor(R.color.colorAccent));
+        //set calendar dates background
+        eventCalendar.setDatesGridBackgroundColor(getResources().getColor(R.color.colorAccent));
+        //set calendar background(both day labels and dates)
+        eventCalendar.setCalendarBackground(ContextCompat.getDrawable(this, R.drawable.custom_drawable));
+        //set prev/next btn background
+        eventCalendar.setPrevBtnBackground(ContextCompat.getDrawable(this, R.drawable.custom_drawable));
+        eventCalendar.setNextBtnBackground(ContextCompat.getDrawable(this, R.drawable.custom_drawable));
+        */
+
+        //add events
         List<Event> events = new ArrayList<>();
 
         //set default shape to rounded square
